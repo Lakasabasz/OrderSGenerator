@@ -1,16 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Generator_rozkazów_S.Models;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 
 namespace Generator_rozkazów_S;
 
-public partial class RozkazS : UserControl, IRozkazS
+public partial class OrderSEditableView : UserControl, IRozkazS
 {
+    public static OrderSEditableView Create(int number, User? isedr, User? fromOrder, IList<Station> stations, string post,
+        bool yearlyMode)
+    {
+        return new OrderSEditableView(yearlyMode)
+        {
+            Isedr = isedr,
+            FromOrder = fromOrder,
+            Stations = stations,
+            Number = number,
+            Post = post
+        };
+    }
+    
     private VMOrderS _vmodel;
-    public int Number {
+    public int Number
+    {
+        get => _vmodel.OrderNumber;
         set => _vmodel.OrderNumber = value;
     }
 
@@ -18,17 +35,21 @@ public partial class RozkazS : UserControl, IRozkazS
     public User? FromOrder { set => _vmodel.FromOrderSet = value; }
     public Station Station { set => _vmodel.Station = value; }
     public string Post { set => _vmodel.Post = value; }
+    public DateTime Date => DateTime.ParseExact(_vmodel.Date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
     public IList<Station> Stations { set => _vmodel.Stations = value; }
 
-    public RozkazS()
+    public OrderSEditableView(bool yearlyMode)
     {
         InitializeComponent();
         _vmodel = new VMOrderS
         {
             Date = DateTime.Now.ToString("dd.MM.yyyy")
         };
+        _yearlyMode = yearlyMode;
         DataContext = _vmodel;
     }
+
+    private bool _yearlyMode;
     
     private void _updateTime()
     {

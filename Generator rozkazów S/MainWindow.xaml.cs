@@ -69,33 +69,26 @@ namespace Generator_rozkazów_S
 
             if (_loggedInUser.Role.GivingOrdersIndependently || _loggedInUser.Role.Admin)
                 UserManagemant.IsEnabled = true;
+            
             _availableStations = _dbCtx.Stations.ToList();
-            Rozkaz.Number = _getNextOrderNumber();
-            Rozkaz.Isedr = _loggedInUser.Role.GivingOrdersIndependently ? _loggedInUser : null;
-            Rozkaz.FromOrder = _loggedInUser.Role.GivingOrdersIndependently ? null : _loggedInUser;
-            Rozkaz.Stations = _availableStations;
-            Rozkaz.Post = _posterunek;
             IsEnabledWaitingOrders = !_loggedInUser.Role.GivingOrdersIndependently;
             if (_loggedInUser.Role.GivingOrdersIndependently)
             {
                 ButtonSet.Content = new NewOrderButtonSet(CleanOrder, UpdateTime, PrintOrder, Radiophone, Redirect, BeforeOrder);
-                RozkazUC.Content = new RozkazS();
+                _newEditableOrder();
             }
             else
             {
                 ButtonSet.Content =
-                    new ArchivalOrderButtonSet(null, null, PrintOrder, BeforeOrder, NextOrder, IsNext, IsBefore);
-                RozkazUC.Content = new FrozenRozkazS();
+                    new ArchivalOrderButtonSet(null, null, PrintOrder, BeforeOrder, NextOrder, 
+                        ()=>_dbCtx.IsNext(DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date), Rozkaz.Number),
+                        ()=>_dbCtx.IsBefore(DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date), Rozkaz.Number));
+                _loadLastFrozenOrder();
             }
             return true;
         }
 
-        private bool IsBefore()
-        {
-            throw new NotImplementedException();
-        }
-
-        private bool IsNext()
+        private void _loadLastFrozenOrder()
         {
             throw new NotImplementedException();
         }
@@ -117,28 +110,20 @@ namespace Generator_rozkazów_S
             throw new NotImplementedException();
         }
         
-        private void _newOrder()
+        private void _newEditableOrder()
         {
             if (_loggedInUser.Role is null) throw new NullReferenceException();
             User? isedr = _loggedInUser.Role.GivingOrdersIndependently ? _loggedInUser : null;
             User? fromOrder = _loggedInUser.Role.GivingOrdersIndependently ? null : _loggedInUser;
-            Rozkaz = new RozkazS()
-            {
-                Isedr = isedr,
-                FromOrder = fromOrder,
-                Stations = _availableStations,
-                Post = _posterunek,
-                Number = _getNextOrderNumber()
-            };
+            Rozkaz = OrderSEditableView.Create(_getNextOrderNumber(), isedr, fromOrder, _availableStations,
+                _posterunek, _settings.YearlyMode);
             RozkazUC.Content = Rozkaz;
             Rozkaz.Update_Time();
         }
         
         private int _getNextOrderNumber()
         {
-            int majorNumber;
-            if (_settings.YearlyMode) majorNumber = DateTime.Now.Year;
-            else majorNumber = DateTime.Now.Year * 12 + (DateTime.Now.Month - 1);
+            int majorNumber = DatabaseContext.MajorNumberCalc(_settings.YearlyMode, DateTime.Now);
             OrderS? lastOrder = _dbCtx.OrdersS
                 .Where(x => x.MajorNumber == majorNumber)
                 .OrderByDescending(x => x.MinorNumber)
@@ -151,19 +136,7 @@ namespace Generator_rozkazów_S
         {
             _verifySession();
             if (_loggedInUser.Role is null) throw new NullReferenceException();
-            User? isedr = _loggedInUser.Role.GivingOrdersIndependently ? _loggedInUser : null;
-            User? fromOrder = _loggedInUser.Role.GivingOrdersIndependently ? null : _loggedInUser;
-            Rozkaz = new RozkazS()
-            {
-                Background = Background,
-                Isedr = isedr,
-                FromOrder = fromOrder,
-                Stations = _availableStations,
-                Post = _posterunek,
-                Number = _getNextOrderNumber()
-            };
-            RozkazUC.Content = Rozkaz;
-            Rozkaz.Update_Time();
+            _newEditableOrder();
         }
 
         private void UpdateTime(object sender, RoutedEventArgs e)
@@ -186,7 +159,7 @@ namespace Generator_rozkazów_S
                 if (signed is null)
                 {
                     Extensions.MessageBox.Error("Przedwcześnie zamknięto okno lub rozkaz został anulowany", "Błąd podpisu rozkazu");
-                    if (auth.Canceled) _newOrder();
+                    if (auth.Canceled) _newEditableOrder();
                     return;
                 }
 
@@ -198,7 +171,7 @@ namespace Generator_rozkazów_S
             if (printDialog.ShowDialog() != true) return;
             printDialog.PrintVisual(frozenOrder, "Drukuj rozkaz S");
             
-            _newOrder();
+            _newEditableOrder();
         }
 
         private void Radiophone(object sender, RoutedEventArgs e)
@@ -210,18 +183,8 @@ namespace Generator_rozkazów_S
                 MessageBox.Show("Nie masz uprawnień do samodzielnego wydania rozkazu S");
                 return;
             }
-            User? isedr = _loggedInUser.Role.GivingOrdersIndependently ? _loggedInUser : null;
-            User? fromOrder = _loggedInUser.Role.GivingOrdersIndependently ? null : _loggedInUser;
-            Rozkaz = new RozkazS()
-            {
-                Isedr = isedr,
-                FromOrder = fromOrder,
-                Stations = _availableStations,
-                Post = _posterunek,
-                Number = _getNextOrderNumber(),
-            };
-            RozkazUC.Content = Rozkaz;
-            Rozkaz.Update_Time();
+            
+            _newEditableOrder();
         }
 
         private void Redirect(object sender, RoutedEventArgs e)

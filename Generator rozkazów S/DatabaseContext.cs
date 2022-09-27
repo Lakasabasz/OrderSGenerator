@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using Generator_rozkazów_S.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,5 +35,21 @@ public class DatabaseContext: DbContext
             $"Server={_host};Port={_port};Database={_db};Uid={_user};Pwd={_pass}";
         var serverVersion = ServerVersion.AutoDetect(connectionString);
         optionsBuilder.UseMySql(connectionString, serverVersion);
+    }
+    
+    public bool IsBefore(int currentMajor, int currentMinor)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsNext(int currentMajor, int currentMinor)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static int MajorNumberCalc(bool yearlyMode, DateTime date)
+    {
+        if (yearlyMode) return date.Year;
+        return date.Year * 12 + (date.Month - 1);
     }
 }
