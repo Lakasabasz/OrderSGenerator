@@ -1,0 +1,84 @@
+﻿<Window x:Class="Generator_rozkazów_S.UserManagement"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:Generator_rozkazów_S"
+        mc:Ignorable="d"
+        Title="UserManagement" Height="450" Width="800">
+    <Grid Margin="5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="8*" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Button Margin="0 0 1 0" Click="Add_OnClick">➕</Button>
+                <Button Margin="0 0 1 0" Click="Remove_OnClick">✖</Button>
+                <Button Margin="0 0 1 0" Click="Refresh_OnClick">🔄</Button>
+            </StackPanel>
+            <ListBox Grid.Row="1" Name="Accounts" SelectionChanged="Accounts_OnSelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Username}" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+        <StackPanel Grid.Column="1" Margin="10" Name="Properties">
+            <TextBox FontSize="20" Name="LastName" Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" />
+            <Separator />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="50" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="100" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Margin" Value="0 5 0 0"></Setter>
+                    </Style>
+                    <Style TargetType="{x:Type TextBox}">
+                        <Setter Property="Margin" Value="0 5 0 0"></Setter>
+                    </Style>
+                    <Style TargetType="{x:Type PasswordBox}">
+                        <Setter Property="Margin" Value="0 5 0 0"></Setter>
+                    </Style>
+                    <Style TargetType="{x:Type ComboBox}">
+                        <Setter Property="Margin" Value="0 5 0 0"></Setter>
+                    </Style>
+                </Grid.Resources>
+                <TextBlock Text="Login" />
+                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Username}" />
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Hasło" />
+                <PasswordBox Grid.Row="1" Grid.Column="2" Name="Password" PasswordChanged="OnPasswordChanged" />
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="Powtórz hasło" />
+                <PasswordBox Grid.Row="2" Grid.Column="2" Name="RepeatPassword" PasswordChanged="OnPasswordChanged" />
+                <TextBlock Grid.Row="3" Grid.Column="0" Text="Rola" />
+                <ComboBox Grid.Row="3" Grid.Column="2" Name="Roles" SelectionChanged="Roles_OnSelectionChanged">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Rolename}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                
+                <StackPanel Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Zapisz" Height="40" Width="70" Margin="2 0" Click="Save_OnClick" />
+                </StackPanel>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
