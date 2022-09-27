@@ -26,19 +26,19 @@
             <TextBlock FontSize="18" FontWeight="Bold" FontFamily="Times New Roman" TextAlignment="Center">Rozkaz pisemny "S" nr
                 <Label FontSize="18" Padding="5 0 0 0" Margin="0 0 0 -5" Content="{Binding OrderNumber}" />
                 <Label FontSize="18" Visibility="{Binding TrainDriverSlash}" Content="\" Margin="0 0 0 -5"/>
-                <TextBox FontSize="18" Padding="5 0 0 0" Margin="0 0 0 -5" BorderThickness="1" BorderBrush="LightGray" Name="Maszynista" MinWidth="40px" Text="{Binding TrainDriverNumber, UpdateSourceTrigger=PropertyChanged, TargetNullValue=''}"/>
+                <TextBlock FontSize="18" Padding="5 0 0 0" Margin="0 0 0 -5" MinWidth="40px" Text="{Binding TrainDriverNumber, TargetNullValue=''}"/>
             </TextBlock>
             <DockPanel HorizontalAlignment="Center" Margin="0 10">
                 <TextBlock Text="dla" />
                 <TextBlock TextAlignment="Center" Margin="5 -10 5 0">
-                    <TextBlock Text="pociągu" PreviewMouseDown="Pociag_click" TextDecorations="{Binding ForTrainDecoration}" />
+                    <TextBlock Text="pociągu" TextDecorations="{Binding ForTrainDecoration}" />
                     <LineBreak />
                     <Border BorderThickness="0 1 0 0" BorderBrush="Black">
-                        <TextBlock Text="manewru" PreviewMouseDown="Manewr_click" TextDecorations="{Binding ForShuntDecoration}" Margin="0 -1 0 0"/>
+                        <TextBlock Text="manewru" TextDecorations="{Binding ForShuntDecoration}" Margin="0 -1 0 0"/>
                     </Border>
                 </TextBlock>
                 <TextBlock Text="nr" />
-                <TextBox Margin="5 0" MinWidth="40px" Text="{Binding TrainNumber, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBlock Margin="5 0" Text="{Binding TrainNumber}" />
                 <TextBlock Text="dnia" />
                 <TextBlock Margin="5 0 5 0" Text="{Binding Date}" />
             </DockPanel>
@@ -46,61 +46,61 @@
         <Border Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="{Binding Plot1BorderThickness}" BorderBrush="Black" Name="Dzi1" />
         <Label FontWeight="Bold" Grid.Row="1" Content="1" />
         <Border Grid.Row="1" Grid.Column="1" BorderThickness="2 0 0 0" BorderBrush="Black" />
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10 5 0 5" >
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="10 5 0 5">
             <DockPanel Margin="0 5 0 0" HorizontalAlignment="Left">
                 <TextBlock Text="zezwalam po otrzymaniu" Margin="0 0 5 0" />
                 <TextBlock TextAlignment="Center" Margin="5 -10 5 0">
-                    <TextBlock TextDecorations="{Binding ForSignalDriveOrderDecoration}" Text='sygnału "Nakaz jazdy"' PreviewMouseDown="SyganlNakazJazdy_OnPreviewMouseDown" />
+                    <TextBlock TextDecorations="{Binding ForSignalDriveOrderDecoration}" Text='sygnału "Nakaz jazdy"'/>
                     <LineBreak />
                     <Border BorderThickness="0 1 0 0" BorderBrush="Black">
-                        <TextBlock TextDecorations="{Binding ForOnlyOrderDecoration}" Text="tylko tego rozkazu pisemnego" PreviewMouseDown="TylkoTegoRozkazu_OnPreviewMouseDown" Margin="0 -1 0 0"/>
+                        <TextBlock TextDecorations="{Binding ForOnlyOrderDecoration}" Text="tylko tego rozkazu pisemnego" Margin="0 -1 0 0"/>
                     </Border>
                 </TextBlock>
             </DockPanel>
             <TextBlock Margin="0 5 0 0" TextDecorations="{Binding SemaphoreS1OutDecoration}">
                 - przejechać obok wskazującego sygnał "Stój" semafora<LineBreak />
-                  wyjazdowego<TextBox Margin="5 0 0 -5" MinWidth="20px" IsEnabled="{Binding SemaphoreS1OutEnable}" Text="{Binding SemaphoreS1OutName, UpdateSourceTrigger=PropertyChanged}" />
+                  wyjazdowego<TextBlock Margin="5 0 0 -5" Text="{Binding SemaphoreS1OutName}" />
             </TextBlock>
             <TextBlock/>
-            <TextBlock Margin="5" TextDecorations="{Binding SemaphoreS1SignpostOutDecoration}">drogowskazowego<TextBox Margin="5 0 5 -5" MinWidth="20px" Text="{Binding SemaphoreS1SignpostOutName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SemaphoreS1SignpostOutEnable}"/>(odnoszącego się do wyjazdu pociągu)</TextBlock>
+            <TextBlock Margin="5" TextDecorations="{Binding SemaphoreS1SignpostOutDecoration}">drogowskazowego<TextBlock Margin="5 0 5 -5" Text="{Binding SemaphoreS1SignpostOutName}"/>(odnoszącego się do wyjazdu pociągu)</TextBlock>
             <Border BorderThickness="0 1" BorderBrush="Black" Margin="0 5" />
             <TextBlock TextDecorations="{Binding WithoutSemaphoreOutDecoration}">
-                - wyjechać z toru nr<TextBox Margin="5 0 5 -5" MinWidth="20px" Text="{Binding WithoutSemaphoreOutNumber, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding WithoutSemaphoreOutEnable}" />nie posiadającego semafora wyjazdowego
+                - wyjechać z toru nr<TextBlock Margin="5 0 5 -5" Text="{Binding WithoutSemaphoreOutNumber}" />nie posiadającego semafora wyjazdowego
             </TextBlock>
         </StackPanel>
         <Border Grid.Row="2" Grid.ColumnSpan="2" BorderThickness="{Binding Plot2BorderThickness}" BorderBrush="Black" />
-        <Label FontWeight="Bold" Grid.Row="2">2</Label>
+        <Label FontWeight="Bold" Grid.Row="2" Content="2" />
         <Border Grid.Row="2" Grid.Column="1" BorderThickness="2 0 0 0" BorderBrush="Black" />
         <StackPanel Grid.Row="2" Grid.Column="1" Margin="10 5 0 5" >
-            <TextBlock Name="Dzi2As">zezwalam przejechać obok wskazującego sygnał "Stój" semafora:</TextBlock>
+            <TextBlock>zezwalam przejechać obok wskazującego sygnał "Stój" semafora:</TextBlock>
             <TextBlock TextDecorations="{Binding SemaphoreS1InDecoration}">
-                - wjazdowego<TextBox Margin="5 0 0 -5" MinWidth="20px" Text="{Binding SemaphoreS1InName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SemaphoreS1InEnable}" />
+                - wjazdowego<TextBlock Margin="5 0 0 -5" Text="{Binding SemaphoreS1InName}" />
             </TextBlock>
-            <TextBlock Margin="0 5 0 0" TextDecorations="{Binding SemaphoreS1SignpostInDecoration}">- drogowskazowego<TextBox Margin="5 0 5 -5" MinWidth="20px" Text="{Binding SemaphoreS1SignpostInName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SemaphoreS1SignpostInEnable}" />(odnoszącego się do wjazdu pociągu)</TextBlock>
-            <TextBlock Margin="0 5 0 0" TextDecorations="{Binding SemaphoreS1SpaceInDecoration}">- odstępowego<TextBox Margin="5 0 5 -5" MinWidth="20px" Text="{Binding SemaphoreS1SpaceInName, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding SemaphoreS1SpaceInEnable}"/></TextBlock>
+            <TextBlock Margin="0 5 0 0" TextDecorations="{Binding SemaphoreS1SignpostInDecoration}">- drogowskazowego<TextBlock Margin="5 0 5 -5" Text="{Binding SemaphoreS1SignpostInName}" />(odnoszącego się do wjazdu pociągu)</TextBlock>
+            <TextBlock Margin="0 5 0 0" TextDecorations="{Binding SemaphoreS1SpaceInDecoration}">- odstępowego<TextBlock Margin="5 0 5 -5" Text="{Binding SemaphoreS1SpaceInName}"/></TextBlock>
             <Border BorderThickness="0 1" BorderBrush="Black" Margin="0 5" />
             <TextBlock TextDecorations="{Binding WithoutSemaphoreInDecoration}">
-                - wjechać z zamkniętego toru nr<TextBox Margin="5 0 5 -5" MinWidth="20px" Text="{Binding WithoutSemaphoreInNumber, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding WithoutSemaphoreInEnable}" />nie posiadającego semafora
+                - wjechać z zamkniętego toru nr<TextBlock Margin="5 0 5 -5" MinWidth="20px" Text="{Binding WithoutSemaphoreInNumber}" />nie posiadającego semafora
                 <LineBreak/>wjazdowego
             </TextBlock>
         </StackPanel>
         <Border Grid.Row="3" Grid.ColumnSpan="2" BorderThickness="{Binding Plot3BorderThickness}" BorderBrush="Black" Name="Dzi3" />
-        <Label FontWeight="Bold" Grid.Row="3">3</Label>
+        <Label FontWeight="Bold" Grid.Row="3" Content="3" />
         <Border Grid.Row="3" Grid.Column="1" BorderThickness="2 0 0 0" BorderBrush="Black" />
         <StackPanel Grid.Row="3" Grid.Column="1" Margin="10 5 0 5" >
-            <TextBlock Margin="0 0 0 5">Od <TextBox Margin="5 0 5 -5" MinWidth="100px" Text="{Binding From, UpdateSourceTrigger=PropertyChanged}" /> do <TextBox Margin="5 0 5 -5" MinWidth="100px" Text="{Binding To, UpdateSourceTrigger=PropertyChanged}" /> po torze nr <TextBox Margin="5 0 5 -5" MinWidth="20px" Text="{Binding Nr, UpdateSourceTrigger=PropertyChanged}" /> ruch</TextBlock>
+            <TextBlock Margin="0 0 0 5">Od <TextBlock Margin="5 0 5 -5" Text="{Binding From}" /> do <TextBlock Margin="5 0 5 -5" Text="{Binding To}" /> po torze nr <TextBlock Margin="5 0 5 -5" Text="{Binding Nr}" /> ruch</TextBlock>
             <TextBlock Margin="0 0 0 5">pociągów prowadzony jest w odstępie posterunków następczych.</TextBlock>
             <TextBlock Margin="0 0 0 5">Wskazania semaforów sbl są nieważne. Zachować ostrożność od </TextBlock>
             <TextBlock Margin="0 0 0 5">ostatniego semafora ze wskaźnikiem "W 18". Szlak wolny, ostatni</TextBlock>
-            <TextBlock Margin="0 0 0 5">pociąg nr <TextBox Margin="5 0 5 -5" MinWidth="60px" Text="{Binding LastTrainNr, UpdateSourceTrigger=PropertyChanged}" /> przybył do <TextBox Margin="5 0 5 -5" MinWidth="160px" Text="{Binding LastTrainDestination, UpdateSourceTrigger=PropertyChanged}" /></TextBlock>
-            <TextBlock Margin="0 0 0 5">o godzinie <TextBox Margin="5 0 5 -5" MinWidth="50px" Text="{Binding LastTrainTime, UpdateSourceTrigger=PropertyChanged}" /></TextBlock>
+            <TextBlock Margin="0 0 0 5">pociąg nr <TextBlock Margin="5 0 5 -5" Text="{Binding LastTrainNr}" /> przybył do <TextBlock Margin="5 0 5 -5" MinWidth="160px" Text="{Binding LastTrainDestination}" /></TextBlock>
+            <TextBlock Margin="0 0 0 5">o godzinie <TextBlock Margin="5 0 5 -5" Text="{Binding LastTrainTime}" /></TextBlock>
         </StackPanel>
         <Border Grid.Row="4" Grid.ColumnSpan="2" BorderThickness="{Binding Plot4BorderThickness}" BorderBrush="Black" Name="Dzi4" />
         <Label FontWeight="Bold" Grid.Row="4">4</Label>
         <Border Grid.Row="4" Grid.Column="1" BorderThickness="2 0 0 0" BorderBrush="Black" />
         <StackPanel Grid.Row="4" Grid.Column="1" Margin="10 5 0 5">
             <TextBlock>Inne:</TextBlock>
-            <TextBox Height="100" Text="{Binding Other, UpdateSourceTrigger=PropertyChanged}" TextWrapping="Wrap"  Name="Dzi4A" Margin="0 0 5 0" />
+            <TextBlock Text="{Binding Other}" TextWrapping="Wrap" Margin="0 0 5 0" />
         </StackPanel>
         <Border Grid.Row="5" Grid.ColumnSpan="2" BorderThickness="0 0 0 2" BorderBrush="Black" />
         <Grid Grid.Row="5" Grid.ColumnSpan="2">
@@ -155,10 +155,10 @@
             </Grid.ColumnDefinitions>
             <TextBlock Grid.RowSpan="2" TextAlignment="Center" VerticalAlignment="Center">Rozkaz otrzymałem</TextBlock>
             <Border Grid.RowSpan="2" BorderThickness="0 0 2 0" BorderBrush="Black"/>
-            <TextBox TextAlignment="Center" Grid.Row="0" Grid.Column="1"  Text="{Binding TrainManager, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock TextAlignment="Center" Grid.Row="0" Grid.Column="1"  Text="{Binding TrainManager}" />
             <TextBlock Grid.Column="1" Grid.Row="1" FontSize="10" Margin="0 -5 0 0" TextAlignment="Center" Text="Kierownik pociągu"/>
             <Border Grid.RowSpan="2" Grid.Column="1" BorderThickness="0 0 2 0" BorderBrush="Black"/>
-            <TextBox TextAlignment="Center" Grid.Row="0" Grid.Column="2"  Text="{Binding TrainDriver, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock TextAlignment="Center" Grid.Row="0" Grid.Column="2" Text="{Binding TrainDriver}" />
             <TextBlock Grid.Column="2" Grid.Row="1" FontSize="10" Margin="0 -5 0 0" TextAlignment="Center" Text="Maszynista" />
         </Grid>
     </Grid>
