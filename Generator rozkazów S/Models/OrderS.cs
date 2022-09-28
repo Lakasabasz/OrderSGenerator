@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Generator_rozkazów_S.Models;
 
@@ -16,4 +17,30 @@ public class OrderS
     public int? OnCommandId { get; set; }
     public User? OnCommand { get; set; }
     public string Status { get; set; } = null!;
+    public string? TrainDriverNumber { get; set; }
+    public bool ForTrain { get; set; }
+    public string TrainNumber { get; set; } = null!;
+    public DateOnly Date { get; set; }
+    public bool? SignalDriveOrder { get; set; }
+    public string? SemaphoreS1OutName { get; set; }
+    public string? SemaphoreS1SingpostOutName { get; set; }
+    public string? WithoutSemaphoreOutNumber { get; set; }
+    public string? SemaphoreS1InName { get; set; }
+    public string? SemaphoreS1SignpostInName { get; set; }
+    public string? SemaphoreS1SpaceInName { get; set; }
+    public string? WithoutSemaphoreInNumber { get; set; }
+    public string? From { get; set; }
+    public string? To { get; set; }
+    public string? TrackNr { get; set; }
+    public string? LastTrainNr { get; set; }
+    public string? LastTrainDestination { get; set; }
+    public string? LastTrainTime { get; set; }
+    public string? Other { get; set; }
+    [Column("StationId"), ForeignKey("Station")]
+    public int StationId { get; set; }
+    public Station Station { get; set; } = null!;
+    public int OrderHour { get; set; }
+    public int OrderMinute { get; set; }
+    public string TrainDriver { get; set; } = null!;
+    public string? TrainManager { get; set; }
 }

@@ -47,7 +47,7 @@ public class DatabaseContext: DbContext
         throw new NotImplementedException();
     }
 
-    public static int MajorNumberCalc(bool yearlyMode, DateTime date)
+    public static int MajorNumberCalc(bool yearlyMode, DateOnly date)
     {
         if (yearlyMode) return date.Year;
         return date.Year * 12 + (date.Month - 1);

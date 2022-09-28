@@ -25,7 +25,7 @@ public partial class FrozenRozkazS : UserControl
         InitializeComponent();
         _vmodel = new VMOrderS
         {
-            Date = DateTime.Now.ToString("dd.MM.yyyy")
+            Date = DateOnly.FromDateTime(DateTime.Now)
         };
         DataContext = _vmodel;
     }

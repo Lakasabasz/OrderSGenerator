@@ -123,7 +123,7 @@ namespace Generator_rozkazów_S
         
         private int _getNextOrderNumber()
         {
-            int majorNumber = DatabaseContext.MajorNumberCalc(_settings.YearlyMode, DateTime.Now);
+            int majorNumber = DatabaseContext.MajorNumberCalc(_settings.YearlyMode, DateOnly.FromDateTime(DateTime.Now));
             OrderS? lastOrder = _dbCtx.OrdersS
                 .Where(x => x.MajorNumber == majorNumber)
                 .OrderByDescending(x => x.MinorNumber)

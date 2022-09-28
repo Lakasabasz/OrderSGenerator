@@ -35,7 +35,7 @@ public partial class OrderSEditableView : UserControl, IRozkazS
     public User? FromOrder { set => _vmodel.FromOrderSet = value; }
     public Station Station { set => _vmodel.Station = value; }
     public string Post { set => _vmodel.Post = value; }
-    public DateTime Date => DateTime.ParseExact(_vmodel.Date, "dd.MM.yyyy", CultureInfo.InvariantCulture);
+    public DateOnly Date => _vmodel.Date;
     public IList<Station> Stations { set => _vmodel.Stations = value; }
 
     public OrderSEditableView(bool yearlyMode)
@@ -43,7 +43,7 @@ public partial class OrderSEditableView : UserControl, IRozkazS
         InitializeComponent();
         _vmodel = new VMOrderS
         {
-            Date = DateTime.Now.ToString("dd.MM.yyyy")
+            Date = DateOnly.FromDateTime(DateTime.Now)
         };
         _yearlyMode = yearlyMode;
         DataContext = _vmodel;

@@ -60,8 +60,8 @@ public class VMOrderS: INotifyPropertyChanged
             return ForTrain.Value ? TextDecorations.Strikethrough : null;
         }
     }
-    public int TrainNumber { get; set; }
-    public string Date { get; set; }
+    public string TrainNumber { get; set; }
+    public DateOnly Date { get; set; }
 
     private bool? _signalDriverOrder;
     public bool? SignalDriveOrder
@@ -93,14 +93,13 @@ public class VMOrderS: INotifyPropertyChanged
 
     private bool Plot1Border => UseSemaphoreS1Out || UseSemaphoreS1SignpostOut || UseWithoutSemaphoreOut;
     public Thickness Plot1BorderThickness => Plot1Border ? new Thickness(2) : new Thickness(0, 2, 0, 2);
-    private bool UseSemaphoreS1Out { get; set; }
+    private bool UseSemaphoreS1Out => _semaphoreS1OutName.Length != 0;
     private string _semaphoreS1OutName = "";
     public string SemaphoreS1OutName { 
         get => _semaphoreS1OutName;
         set
         {
             _semaphoreS1OutName = value;
-            UseSemaphoreS1Out = value.Length != 0;
             _notifyPropertyChanged("Plot1BorderThickness");
             _notifyPropertyChanged("SemaphoreS1SignpostOutDecoration");
             _notifyPropertyChanged("SemaphoreS1SignpostOutEnable");
@@ -110,14 +109,13 @@ public class VMOrderS: INotifyPropertyChanged
     }
     public bool SemaphoreS1OutEnable => !(UseSemaphoreS1SignpostOut || UseWithoutSemaphoreOut);
     public TextDecorationCollection? SemaphoreS1OutDecoration => UseSemaphoreS1Out || !(UseSemaphoreS1Out || UseWithoutSemaphoreOut || UseSemaphoreS1SignpostOut) ? null : TextDecorations.Strikethrough;
-    private bool UseSemaphoreS1SignpostOut { get; set; }
+    private bool UseSemaphoreS1SignpostOut => _semaphoreS1SingpostOutName.Length != 0;
     private string _semaphoreS1SingpostOutName = "";
     public string SemaphoreS1SignpostOutName {
         get => _semaphoreS1SingpostOutName;
         set
         {
             _semaphoreS1SingpostOutName = value;
-            UseSemaphoreS1SignpostOut = value.Length != 0;
             _notifyPropertyChanged("Plot1BorderThickness");
             _notifyPropertyChanged("SemaphoreS1OutDecoration");
             _notifyPropertyChanged("SemaphoreS1OutEnable");
@@ -127,7 +125,7 @@ public class VMOrderS: INotifyPropertyChanged
     }
     public bool SemaphoreS1SignpostOutEnable => !(UseSemaphoreS1Out || UseWithoutSemaphoreOut);
     public TextDecorationCollection? SemaphoreS1SignpostOutDecoration => UseSemaphoreS1SignpostOut || !(UseSemaphoreS1Out || UseWithoutSemaphoreOut || UseSemaphoreS1SignpostOut) ? null : TextDecorations.Strikethrough;
-    private bool UseWithoutSemaphoreOut { get; set; }
+    private bool UseWithoutSemaphoreOut => _withoutSemaphoreInNumber.Length != 0;
     private string _withoutSemaphoreOutNumber = "";
     public string WithoutSemaphoreOutNumber
     {
@@ -135,7 +133,6 @@ public class VMOrderS: INotifyPropertyChanged
         set
         {
             _withoutSemaphoreOutNumber = value;
-            UseWithoutSemaphoreOut = value.Length != 0;
             _notifyPropertyChanged("Plot1BorderThickness");
             _notifyPropertyChanged("SemaphoreS1OutDecoration");
             _notifyPropertyChanged("SemaphoreS1OutEnable");
@@ -149,14 +146,13 @@ public class VMOrderS: INotifyPropertyChanged
     private bool Plot2Border =>
         UseSemaphoreS1In || UseSemaphoreS1SignpostIn || UseSemaphoreS1SpaceIn || UseWithoutSemaphoreIn;
     public Thickness Plot2BorderThickness => Plot2Border ? new Thickness(2, 0, 2, 2) : new Thickness(0, 0, 0, 2);
-    public bool UseSemaphoreS1In { get; set; }
+    public bool UseSemaphoreS1In => _semaphoreS1InName.Length != 0;
     private string _semaphoreS1InName = "";
     public string SemaphoreS1InName { 
         get => _semaphoreS1InName;
         set
         {
             _semaphoreS1InName = value;
-            UseSemaphoreS1In = value.Length != 0;
             _notifyPropertyChanged("Plot2BorderThickness");
             _notifyPropertyChanged("SemaphoreS1SignpostInDecoration");
             _notifyPropertyChanged("SemaphoreS1SignpostInEnable");
@@ -168,14 +164,13 @@ public class VMOrderS: INotifyPropertyChanged
     }
     public bool SemaphoreS1InEnable => !(UseSemaphoreS1SignpostIn || UseSemaphoreS1SpaceIn || UseWithoutSemaphoreIn);
     public TextDecorationCollection? SemaphoreS1InDecoration => UseSemaphoreS1In || !(UseSemaphoreS1In || UseWithoutSemaphoreIn || UseSemaphoreS1SpaceIn || UseSemaphoreS1SignpostIn) ? null : TextDecorations.Strikethrough;
-    public bool UseSemaphoreS1SignpostIn { get; set; }
+    public bool UseSemaphoreS1SignpostIn => _semaphoreS1SignpostInName.Length != 0;
     private string _semaphoreS1SignpostInName = "";
     public string SemaphoreS1SignpostInName { 
         get => _semaphoreS1SignpostInName;
         set
         {
             _semaphoreS1SignpostInName = value;
-            UseSemaphoreS1SignpostIn = value.Length != 0;
             _notifyPropertyChanged("Plot2BorderThickness");
             _notifyPropertyChanged("SemaphoreS1InDecoration");
             _notifyPropertyChanged("SemaphoreS1InEnable");
@@ -187,14 +182,13 @@ public class VMOrderS: INotifyPropertyChanged
     }
     public bool SemaphoreS1SignpostInEnable => !(UseSemaphoreS1In || UseSemaphoreS1SpaceIn || UseWithoutSemaphoreIn);
     public TextDecorationCollection? SemaphoreS1SignpostInDecoration => UseSemaphoreS1SignpostIn || !(UseSemaphoreS1In || UseWithoutSemaphoreIn || UseSemaphoreS1SpaceIn || UseSemaphoreS1SignpostIn) ? null : TextDecorations.Strikethrough;
-    public bool UseSemaphoreS1SpaceIn { get; set; }
+    public bool UseSemaphoreS1SpaceIn => _semaphoreS1SpaceInName.Length != 0;
     private string _semaphoreS1SpaceInName = "";
     public string SemaphoreS1SpaceInName { 
         get => _semaphoreS1SpaceInName;
         set
         {
             _semaphoreS1SpaceInName = value;
-            UseSemaphoreS1SpaceIn = value.Length != 0;
             _notifyPropertyChanged("Plot2BorderThickness");
             _notifyPropertyChanged("SemaphoreS1SignpostInDecoration");
             _notifyPropertyChanged("SemaphoreS1SignpostInEnable");
@@ -206,14 +200,13 @@ public class VMOrderS: INotifyPropertyChanged
     }
     public bool SemaphoreS1SpaceInEnable => !(UseSemaphoreS1SignpostIn || UseSemaphoreS1In || UseWithoutSemaphoreIn);
     public TextDecorationCollection? SemaphoreS1SpaceInDecoration => UseSemaphoreS1SpaceIn || !(UseSemaphoreS1In || UseWithoutSemaphoreIn || UseSemaphoreS1SpaceIn || UseSemaphoreS1SignpostIn) ? null : TextDecorations.Strikethrough;
-    public bool UseWithoutSemaphoreIn { get; set; }
+    public bool UseWithoutSemaphoreIn => _withoutSemaphoreInNumber.Length != 0;
     private string _withoutSemaphoreInNumber = "";
     public string WithoutSemaphoreInNumber { 
         get => _withoutSemaphoreInNumber;
         set
         {
             _withoutSemaphoreInNumber = value;
-            UseWithoutSemaphoreIn = value.Length != 0;
             _notifyPropertyChanged("Plot2BorderThickness");
             _notifyPropertyChanged("SemaphoreS1SignpostInDecoration");
             _notifyPropertyChanged("SemaphoreS1SignpostInEnable");
@@ -228,7 +221,7 @@ public class VMOrderS: INotifyPropertyChanged
     
     private bool Plot3Border => From.Length > 0 ||
                                 To.Length > 0 ||
-                                Nr.Length > 0 ||
+                                TrackNr.Length > 0 ||
                                 LastTrainNr.Length > 0 ||
                                 LastTrainDestination.Length > 0 ||
                                 LastTrainTime.Length > 0;
@@ -253,13 +246,13 @@ public class VMOrderS: INotifyPropertyChanged
             _notifyPropertyChanged("Plot3BorderThickness");
         }
     }
-    private string _nr = "";
-    public string Nr
+    private string _trackNr = "";
+    public string TrackNr
     {
-        get => _nr;
+        get => _trackNr;
         set
         {
-            _nr = value;
+            _trackNr = value;
             _notifyPropertyChanged("Plot3BorderThickness");
         }
     }

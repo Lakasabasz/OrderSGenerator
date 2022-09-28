@@ -40,7 +40,7 @@
                 <TextBlock Text="nr" />
                 <TextBox Margin="5 0" MinWidth="40px" Text="{Binding TrainNumber, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBlock Text="dnia" />
-                <TextBlock Margin="5 0 5 0" Text="{Binding Date}" />
+                <TextBlock Margin="5 0 5 0" Text="{Binding Date, ConverterCulture=pl-PL}" />
             </DockPanel>
         </StackPanel>
         <Border Grid.Row="1" Grid.ColumnSpan="2" BorderThickness="{Binding Plot1BorderThickness}" BorderBrush="Black" Name="Dzi1" />

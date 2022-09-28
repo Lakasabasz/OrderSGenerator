@@ -12,5 +12,5 @@ public interface IRozkazS
     User? FromOrder { set; }
     IList<Station>? Stations { set; }
     string Post { set; }
-    DateTime Date { get; }
+    DateOnly Date { get; }
 }
