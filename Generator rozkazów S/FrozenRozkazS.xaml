@@ -12,11 +12,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="4*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -96,7 +96,7 @@
             <TextBlock Margin="0 0 0 5">o godzinie <TextBlock Margin="5 0 5 -5" Text="{Binding LastTrainTime}" /></TextBlock>
         </StackPanel>
         <Border Grid.Row="4" Grid.ColumnSpan="2" BorderThickness="{Binding Plot4BorderThickness}" BorderBrush="Black" Name="Dzi4" />
-        <Label FontWeight="Bold" Grid.Row="4">4</Label>
+        <Label FontWeight="Bold" Grid.Row="4" Content="4" />
         <Border Grid.Row="4" Grid.Column="1" BorderThickness="2 0 0 0" BorderBrush="Black" />
         <StackPanel Grid.Row="4" Grid.Column="1" Margin="10 5 0 5">
             <TextBlock>Inne:</TextBlock>
