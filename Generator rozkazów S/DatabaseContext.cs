@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Generator_rozkazów_S.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,5 +52,26 @@ public class DatabaseContext: DbContext
     {
         if (yearlyMode) return date.Year;
         return date.Year * 12 + (date.Month - 1);
+    }
+
+    public void SaveOrder(FrozenRozkazS frozen, OrderStatus status)
+    {
+        OrderS orderRecord = frozen.ToOrderS();
+        OrderS? recorded = OrdersS.FirstOrDefault(x =>
+            x.MinorNumber == orderRecord.MinorNumber && x.MajorNumber == orderRecord.MajorNumber);
+        if(recorded is null)
+        {
+            orderRecord.Status = status.ToString();
+            OrdersS.Add(orderRecord);
+        }
+        else
+        {
+            if (!recorded.CompareContent(orderRecord)) throw new IllegalStateException();
+            OrderStatus inDb;
+            Enum.TryParse(recorded.Status, out inDb);
+            if (!inDb.PossibleUpdate(status)) throw new IllegalStateException();
+            recorded.Status = status.ToString();
+        }
+        SaveChanges();
     }
 }

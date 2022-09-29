@@ -9,7 +9,7 @@ public class VMOrderS: INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler? PropertyChanged;
     private void _notifyPropertyChanged(string propName)
-        => PropertyChanged?.Invoke(this, new(propName));
+        => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
 
     private int _minor = 0;
 
@@ -276,13 +276,13 @@ public class VMOrderS: INotifyPropertyChanged
             _notifyPropertyChanged("Plot3BorderThickness");
         }
     }
-    private string _lastTrainTrain = "";
+    private string _lastTrainTime = "";
     public string LastTrainTime
     {
-        get => _lastTrainTrain;
+        get => _lastTrainTime;
         set
         {
-            _lastTrainTrain = value;
+            _lastTrainTime = value;
             _notifyPropertyChanged("Plot3BorderThickness");
         }
     }
@@ -378,5 +378,44 @@ public class VMOrderS: INotifyPropertyChanged
             _notifyPropertyChanged("Stations");
             _notifyPropertyChanged("Station");
         }
+    }
+
+    public bool? YearMode { get; set; }
+
+    public OrderS ToOrderS()
+    {
+        if (_forTrain is null) throw new NullReferenceException("_forTrain");
+        if (YearMode is null) throw new NullReferenceException("YearMode");
+        return new OrderS()
+        {
+            MajorNumber = DatabaseContext.MajorNumberCalc(YearMode.Value, Date),
+            MinorNumber = _minor,
+            TrainDriverNumber = _trainDriverNumber,
+            ForTrain = _forTrain.Value,
+            TrainNumber = TrainNumber,
+            Date = Date,
+            SignalDriveOrder = _signalDriverOrder,
+            SemaphoreS1OutName = _semaphoreS1OutName,
+            SemaphoreS1SingpostOutName = _semaphoreS1SingpostOutName,
+            WithoutSemaphoreOutNumber = _withoutSemaphoreOutNumber,
+            SemaphoreS1InName = _semaphoreS1InName,
+            SemaphoreS1SignpostInName = _semaphoreS1SignpostInName,
+            SemaphoreS1SpaceInName = _semaphoreS1SpaceInName,
+            WithoutSemaphoreInNumber = _withoutSemaphoreInNumber,
+            From = _from,
+            To = _to,
+            TrackNr = _trackNr,
+            LastTrainNr = _lastTrainNr,
+            LastTrainDestination = _lastTrainDestination,
+            LastTrainTime = _lastTrainTime,
+            Other = _other,
+            Station = _station,
+            OrderHour = _hour,
+            OrderMinute = _minute,
+            Authorized = _isedr,
+            OnCommand = _fromOrder,
+            TrainManager = TrainManager,
+            TrainDriver = TrainDriver
+        };
     }
 }

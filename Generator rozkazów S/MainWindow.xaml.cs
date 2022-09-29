@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -183,7 +184,21 @@ namespace Generator_rozkazów_S
                 MessageBox.Show("Nie masz uprawnień do samodzielnego wydania rozkazu S");
                 return;
             }
+
+            if (Rozkaz is not OrderSEditableView view) return;
+            FrozenRozkazS frozen = view.Froze();
+
+            try
+            {
+                _dbCtx.SaveOrder(frozen, OrderStatus.Rt);
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Sprawdź poprawność rozkazu");
+                return;
+            }
             
+            MessageBox.Show("Nadano rozkaz");
             _newEditableOrder();
         }
 

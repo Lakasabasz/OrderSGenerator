@@ -81,4 +81,9 @@ public partial class OrderSEditableView : UserControl, IRozkazS
     {
         _vmodel.SignalDriveOrder = false;
     }
+
+    public FrozenRozkazS Froze()
+    {
+        return new FrozenRozkazS(_vmodel, _yearlyMode);
+    }
 }

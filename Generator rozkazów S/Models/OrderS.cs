@@ -43,4 +43,34 @@ public class OrderS
     public int OrderMinute { get; set; }
     public string TrainDriver { get; set; } = null!;
     public string? TrainManager { get; set; }
+
+    public bool CompareContent(OrderS orderRecord)
+    {
+        return MinorNumber == orderRecord.MinorNumber &&
+               MajorNumber == orderRecord.MajorNumber &&
+               TrainDriverNumber == orderRecord.TrainDriverNumber &&
+               ForTrain == orderRecord.ForTrain &&
+               TrainNumber == orderRecord.TrainNumber &&
+               Date == orderRecord.Date &&
+               SignalDriveOrder == orderRecord.SignalDriveOrder &&
+               SemaphoreS1OutName == orderRecord.SemaphoreS1OutName &&
+               SemaphoreS1SingpostOutName == orderRecord.SemaphoreS1SingpostOutName &&
+               WithoutSemaphoreOutNumber == orderRecord.WithoutSemaphoreOutNumber &&
+               SemaphoreS1InName == orderRecord.SemaphoreS1InName &&
+               SemaphoreS1SignpostInName == orderRecord.SemaphoreS1SignpostInName &&
+               SemaphoreS1SpaceInName == orderRecord.SemaphoreS1SpaceInName &&
+               WithoutSemaphoreInNumber == orderRecord.WithoutSemaphoreInNumber &&
+               From == orderRecord.From &&
+               To == orderRecord.To &&
+               TrackNr == orderRecord.TrackNr &&
+               LastTrainNr == orderRecord.LastTrainNr &&
+               LastTrainDestination == orderRecord.LastTrainDestination &&
+               LastTrainTime == orderRecord.LastTrainTime &&
+               Other == orderRecord.Other &&
+               Station.Name == orderRecord.Station.Name &&
+               OrderHour == orderRecord.OrderHour &&
+               OrderMinute == orderRecord.OrderMinute &&
+               TrainDriver == orderRecord.TrainDriver &&
+               TrainManager == orderRecord.TrainManager;
+    }
 }

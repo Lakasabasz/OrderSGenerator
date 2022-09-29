@@ -7,10 +7,12 @@ using Generator_rozkazów_S.Models;
 
 namespace Generator_rozkazów_S;
 
-public partial class FrozenRozkazS : UserControl
+public partial class FrozenRozkazS : UserControl, IRozkazS
 {
     private VMOrderS _vmodel;
-    public int Number {
+    public int Number
+    {
+        get => _vmodel.OrderNumber;
         set => _vmodel.OrderNumber = value;
     }
 
@@ -18,6 +20,7 @@ public partial class FrozenRozkazS : UserControl
     public User? FromOrder { set => _vmodel.FromOrderSet = value; }
     public Station Station { set => _vmodel.Station = value; }
     public string Post { set => _vmodel.Post = value; }
+    public DateOnly Date => _vmodel.Date;
     public IList<Station> Stations { set => _vmodel.Stations = value; }
 
     public FrozenRozkazS(OrderS orderS)
@@ -35,34 +38,15 @@ public partial class FrozenRozkazS : UserControl
         throw new NotImplementedException();
     }
 
-    private void _updateTime()
+    public FrozenRozkazS(VMOrderS vmOrderS, bool yearMode)
     {
-        _vmodel.Hour = DateTime.Now.Hour;
-        _vmodel.Minute = DateTime.Now.Minute;
+        InitializeComponent();
+        _vmodel = vmOrderS;
+        _vmodel.YearMode = yearMode;
+        DataContext = _vmodel;
     }
 
-    public void Update_Time()
-    {
-        _updateTime();
-    }
+    public void Update_Time(){}
 
-    private void Pociag_click(object sender, MouseButtonEventArgs e)
-    {
-        _vmodel.ForTrain = true;
-    }
-    
-    private void Manewr_click(object sender, MouseButtonEventArgs e)
-    {
-        _vmodel.ForTrain = false;
-    }
-
-    private void SyganlNakazJazdy_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
-    {
-        _vmodel.SignalDriveOrder = true;
-    }
-
-    private void TylkoTegoRozkazu_OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
-    {
-        _vmodel.SignalDriveOrder = false;
-    }
+    public OrderS ToOrderS() => _vmodel.ToOrderS();
 }
