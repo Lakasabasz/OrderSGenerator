@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Printing;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -147,32 +148,52 @@ namespace Generator_rozkazów_S
 
         private void PrintOrder(object sender, RoutedEventArgs e)
         {
+            // Print new order
+            // Print redirected order
+            // Print printed order
+            // Print rt order
+
+            OrderStatus? status = null;
+            if (Rozkaz is FrozenRozkazS fRozkaz)
+            {
+                if (fRozkaz.Status is null) throw new IllegalStateException();
+                Enum.Parse<OrderStatus>(fRozkaz.Status);
+            }
+            
             _verifySession();
             if (_loggedInUser.Role is null) throw new NullReferenceException();
-            OrderS order = _saveToDatabase(Rozkaz);
-            if (!_loggedInUser.Role.GivingOrdersIndependently)
+            if (!_loggedInUser.Role.GivingOrdersIndependently && status is null)
             {
-                bool result = Extensions.MessageBox.Question("Nie masz uprawnień do samodzielnego wydania rozkazu S, chcesz wysłać go do podpisania?", "Brak uprawnień");
-                if (!result) return;
-                Authorization auth = new(order);
-                auth.ShowDialog();
-                OrderS? signed = auth.Signed;
-                if (signed is null)
-                {
-                    Extensions.MessageBox.Error("Przedwcześnie zamknięto okno lub rozkaz został anulowany", "Błąd podpisu rozkazu");
-                    if (auth.Canceled) _newEditableOrder();
-                    return;
-                }
-
-                order = signed;
+                 Extensions.MessageBox.Error("Nie masz uprawnień do samodzielnego wydania rozkazu S", "Brak uprawnień");
             }
 
-            FrozenRozkazS frozenOrder = new(order);
+            FrozenRozkazS frozenOrder;
+            if (Rozkaz is OrderSEditableView editable)
+                frozenOrder = editable.Froze();
+            else
+                frozenOrder = (FrozenRozkazS)Rozkaz;
+
+            try
+            {
+                _dbCtx.SaveOrder(frozenOrder, status == OrderStatus.Rt ? OrderStatus.Rt : OrderStatus.Printed);
+            }
+            catch (NullReferenceException)
+            {
+                MessageBox.Show("Sprawdź poprawność rozkazu");
+                return;
+            }
+
+            if (status is null)
+            {
+                _newEditableOrder();
+            }
+
+            frozenOrder.Width = 10.5 / (2.54 / 96);
             PrintDialog printDialog = new PrintDialog();
             if (printDialog.ShowDialog() != true) return;
+            printDialog.PrintTicket.PageOrientation = PageOrientation.Portrait;
+            printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
             printDialog.PrintVisual(frozenOrder, "Drukuj rozkaz S");
-            
-            _newEditableOrder();
         }
 
         private void Radiophone(object sender, RoutedEventArgs e)

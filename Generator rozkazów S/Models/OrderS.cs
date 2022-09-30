@@ -73,4 +73,37 @@ public class OrderS
                TrainDriver == orderRecord.TrainDriver &&
                TrainManager == orderRecord.TrainManager;
     }
+
+    public VMOrderS ToVMOrderS()
+    {
+        return new VMOrderS()
+        {
+            Date = Date,
+            IsedrSet = Authorized,
+            FromOrderSet = OnCommand,
+            TrainDriverNumber = TrainDriverNumber,
+            ForTrain = ForTrain,
+            TrainNumber = TrainNumber,
+            SignalDriveOrder = SignalDriveOrder,
+            SemaphoreS1OutName = SemaphoreS1OutName == string.Empty ? null : SemaphoreS1OutName,
+            SemaphoreS1SignpostOutName = SemaphoreS1SingpostOutName == string.Empty ? null : SemaphoreS1SingpostOutName,
+            WithoutSemaphoreOutNumber = WithoutSemaphoreOutNumber == string.Empty ? null : WithoutSemaphoreOutNumber,
+            SemaphoreS1InName = SemaphoreS1InName == string.Empty ? null : SemaphoreS1InName,
+            SemaphoreS1SignpostInName = SemaphoreS1SignpostInName == string.Empty ? null : SemaphoreS1SignpostInName,
+            SemaphoreS1SpaceInName = SemaphoreS1SpaceInName == string.Empty ? null : SemaphoreS1SpaceInName,
+            WithoutSemaphoreInNumber = WithoutSemaphoreInNumber == string.Empty ? null : WithoutSemaphoreInNumber,
+            From = From == string.Empty ? null : From,
+            To = To == string.Empty ? null : To,
+            TrackNr = TrackNr == string.Empty ? null : TrackNr,
+            LastTrainNr = LastTrainNr == string.Empty ? null : LastTrainNr,
+            LastTrainDestination = LastTrainDestination == string.Empty ? null : LastTrainDestination,
+            LastTrainTime = LastTrainTime == string.Empty ? null : LastTrainTime,
+            Other = Other == string.Empty ? null : Other,
+            Station = Station,
+            Hour = OrderHour,
+            Minute = OrderMinute,
+            TrainDriver = TrainDriver,
+            TrainManager = TrainManager == string.Empty ? null : SemaphoreS1SingpostOutName
+        };
+    }
 }

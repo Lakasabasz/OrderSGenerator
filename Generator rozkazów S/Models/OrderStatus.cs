@@ -12,7 +12,7 @@ static class OrderStatusExtension
 {
     public static bool PossibleUpdate(this OrderStatus current, OrderStatus next)
     {
-        if (current == OrderStatus.Canceled) return false;
+        if (current is OrderStatus.Canceled or OrderStatus.Rt) return false;
         if (next == OrderStatus.Canceled) return true;
         return current == OrderStatus.Redirected && next == OrderStatus.Printed;
     }

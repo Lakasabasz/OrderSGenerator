@@ -22,14 +22,13 @@ public partial class FrozenRozkazS : UserControl, IRozkazS
     public string Post { set => _vmodel.Post = value; }
     public DateOnly Date => _vmodel.Date;
     public IList<Station> Stations { set => _vmodel.Stations = value; }
+    public string? Status { get; private set; }
 
-    public FrozenRozkazS(OrderS orderS)
+    public FrozenRozkazS(OrderS orderS, bool yearMode)
     {
         InitializeComponent();
-        _vmodel = new VMOrderS
-        {
-            Date = DateOnly.FromDateTime(DateTime.Now)
-        };
+        _vmodel = orderS.ToVMOrderS();
+        Status = orderS.Status;
         DataContext = _vmodel;
     }
 
