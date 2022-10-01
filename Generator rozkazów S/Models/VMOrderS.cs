@@ -386,6 +386,7 @@ public class VMOrderS: INotifyPropertyChanged
     {
         if (_forTrain is null) throw new NullReferenceException("_forTrain");
         if (YearMode is null) throw new NullReferenceException("YearMode");
+
         return new OrderS()
         {
             MajorNumber = DatabaseContext.MajorNumberCalc(YearMode.Value, Date),

@@ -114,8 +114,8 @@
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock TextAlignment="Center" Text="{Binding Station}" />
-            <TextBlock Grid.Row="1" FontSize="10" Margin="0 -5 0 0" TextAlignment="Center">Stacja</TextBlock>
+            <TextBlock TextAlignment="Center" Text="{Binding Station.Name}" />
+            <TextBlock Grid.Row="1" Grid.Column="0" FontSize="10" Margin="0 -5 0 0" TextAlignment="Center">Stacja</TextBlock>
             <Border Grid.RowSpan="2" BorderThickness="0 0 2 0" BorderBrush="Black"/>
             <TextBlock Grid.Column="1" TextAlignment="Center" Text="{Binding Post}" />
             <TextBlock Grid.Column="1" Grid.Row="1" FontSize="10" Margin="0 -5 0 0" TextAlignment="Center">Posterunek</TextBlock>

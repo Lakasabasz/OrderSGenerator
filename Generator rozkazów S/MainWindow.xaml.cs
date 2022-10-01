@@ -148,11 +148,6 @@ namespace Generator_rozkazów_S
 
         private void PrintOrder(object sender, RoutedEventArgs e)
         {
-            // Print new order
-            // Print redirected order
-            // Print printed order
-            // Print rt order
-
             OrderStatus? status = null;
             if (Rozkaz is FrozenRozkazS fRozkaz)
             {
@@ -215,7 +210,7 @@ namespace Generator_rozkazów_S
             }
             catch (NullReferenceException)
             {
-                MessageBox.Show("Sprawdź poprawność rozkazu");
+                Extensions.MessageBox.Error("Sprawdź poprawność rozkazu", "Błędnie wypełniony rozkaz");
                 return;
             }
             
@@ -225,7 +220,20 @@ namespace Generator_rozkazów_S
 
         private void Redirect(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            _verifySession();
+            if (Rozkaz is not OrderSEditableView) return;
+            Redirection redirection = new Redirection(_dbCtx, Rozkaz.Station, (OrderSEditableView) Rozkaz);
+            try
+            {
+                redirection.ShowDialog();
+            }
+            catch (NullReferenceException)
+            {
+                Extensions.MessageBox.Error("Sprawdź poprawność rozkazu", "Błędnie wypełniony rozkaz");
+                return;
+            }
+            if(!redirection.Result) Extensions.MessageBox.Warning("Przerwano wysyłanie rozkazu", "Rozkaz nie przekazany");
+            else _newEditableOrder();
         }
 
         private void BeforeOrder(object sender, RoutedEventArgs e)

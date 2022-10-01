@@ -13,4 +13,5 @@ public interface IRozkazS
     IList<Station>? Stations { set; }
     string Post { set; }
     DateOnly Date { get; }
+    Station Station { get; }
 }
