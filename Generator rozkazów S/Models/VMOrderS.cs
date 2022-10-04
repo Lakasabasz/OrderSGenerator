@@ -348,12 +348,14 @@ public class VMOrderS: INotifyPropertyChanged
     private User? _isedr;
     public User? IsedrSet
     {
+        get => _isedr;
         set 
         {
             _isedr = value;
             _notifyPropertyChanged("Isedr");
         }
     }
+
     public string Isedr => _isedr?.LastName ?? string.Empty;
     private User? _fromOrder;
     public User? FromOrderSet
@@ -368,6 +370,7 @@ public class VMOrderS: INotifyPropertyChanged
     public string? TrainManager { get; set; }
     public string TrainDriver { get; set; }
     private IList<Station> _stations;
+
     public IList<Station> Stations
     {
         get => _stations;
@@ -381,6 +384,18 @@ public class VMOrderS: INotifyPropertyChanged
     }
 
     public bool? YearMode { get; set; }
+    public User? IsedrUser => _isedr;
+    
+    private bool _canceled = false;
+    public Visibility CancelVisiblity => _canceled ? Visibility.Visible : Visibility.Hidden;
+    public bool Canceled { 
+        get => _canceled;
+        set
+        {
+            _canceled = value;
+            _notifyPropertyChanged(nameof(CancelVisiblity));
+        }
+    }
 
     public OrderS ToOrderS()
     {

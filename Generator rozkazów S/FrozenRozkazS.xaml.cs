@@ -16,7 +16,11 @@ public partial class FrozenRozkazS : UserControl, IRozkazS
         set => _vmodel.OrderNumber = value;
     }
 
-    public User? Isedr { set => _vmodel.IsedrSet = value; }
+    public User? Isedr
+    {
+        get => _vmodel.IsedrUser;
+        set => _vmodel.IsedrSet = value;
+    }
     public User? FromOrder { set => _vmodel.FromOrderSet = value; }
     public Station Station
     {
@@ -52,4 +56,9 @@ public partial class FrozenRozkazS : UserControl, IRozkazS
     public void Update_Time(){}
 
     public OrderS ToOrderS() => _vmodel.ToOrderS();
+
+    public void Cancel()
+    {
+        _vmodel.Canceled = true;
+    }
 }

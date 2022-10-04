@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Printing;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
+using Generator_rozkazów_S.Commands;
 using Generator_rozkazów_S.Models;
 
 namespace Generator_rozkazów_S
@@ -25,7 +23,7 @@ namespace Generator_rozkazów_S
         private Setting _settings;
         public bool IsEnabledWaitingOrders { get; set; }
         public bool IsEnabledRedirectButton { get; set; }
-        public IRozkazS Rozkaz;
+        public IRozkazS? Rozkaz;
 
         public MainWindow()
         {
@@ -39,7 +37,7 @@ namespace Generator_rozkazów_S
             }
             Show();
             _updateWaitingList();
-            Rozkaz.Update_Time();
+            Rozkaz?.Update_Time();
         }
 
         private void _updateWaitingList()
@@ -76,16 +74,72 @@ namespace Generator_rozkazów_S
             IsEnabledWaitingOrders = !_loggedInUser.Role.GivingOrdersIndependently;
             if (_loggedInUser.Role.GivingOrdersIndependently)
             {
-                ButtonSet.Content = new NewOrderButtonSet(CleanOrder, UpdateTime, PrintOrder, Radiophone, Redirect, BeforeOrder);
                 _newEditableOrder();
+                if (Rozkaz is null) throw new NullReferenceException();
+                ButtonSet.Content = 
+                    new NewOrderButtonSet(
+                        new ClearOrderCommand(CleanOrder), 
+                        new UpdateOrderTimeCommand((OrderSEditableView) Rozkaz),
+                        new PrintCommand(Rozkaz, () =>
+                        {
+                            _verifySession();
+                            return _loggedInUser;
+                        }, _dbCtx, _newEditableOrder),
+                        new RadiotelephoneCommand(Rozkaz, () =>
+                        {
+                            _verifySession();
+                            return _loggedInUser;
+                        }, _dbCtx, _newEditableOrder),
+                        new RedirectCommand(Rozkaz, () =>
+                        {
+                            _verifySession();
+                            return _loggedInUser;
+                        }, _dbCtx, _newEditableOrder), 
+                        new LoadBeforeOrderCommand(_dbCtx,
+                            DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date),
+                            Rozkaz.Number,
+                            () =>
+                            {
+                                _verifySession();
+                                return _loggedInUser;
+                            }, _loadFrozenOrder, _newEditableOrder, _settings.YearlyMode));
             }
             else
             {
-                ButtonSet.Content =
-                    new ArchivalOrderButtonSet(null, null, PrintOrder, BeforeOrder, NextOrder, 
-                        ()=>_dbCtx.IsNext(DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date), Rozkaz.Number),
-                        ()=>_dbCtx.IsBefore(DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date), Rozkaz.Number));
                 _loadLastFrozenOrder();
+                var beforeOrderCommand = new LoadBeforeOrderCommand(
+                    _dbCtx,
+                    Rozkaz is not null ? DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date) : 0,
+                    Rozkaz?.Number ?? 0,
+                    () =>
+                    {
+                        _verifySession();
+                        return _loggedInUser;
+                    }, _loadFrozenOrder, null, _settings.YearlyMode);
+                var nextOrderCommand = new LoadNextOrderCommand(
+                    _dbCtx,
+                    Rozkaz is not null ? DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date) : 0,
+                    Rozkaz?.Number ?? 0,
+                    () =>
+                    {
+                        _verifySession();
+                        return _loggedInUser;
+                    }, _loadFrozenOrder, null, _settings.YearlyMode);
+                if (Rozkaz is null)
+                    ButtonSet.Content = new ArchivalOrderButtonSet(null, null, null,
+                        beforeOrderCommand, nextOrderCommand);
+                else
+                    ButtonSet.Content = new ArchivalOrderButtonSet(null, null,
+                        new PrintCommand(
+                            Rozkaz,
+                            () =>
+                            {
+                                _verifySession();
+                                return _loggedInUser;
+                            }, 
+                            _dbCtx,
+                            null),
+                        beforeOrderCommand, nextOrderCommand);
             }
             return true;
         }
@@ -94,10 +148,12 @@ namespace Generator_rozkazów_S
         {
             throw new NotImplementedException();
         }
-
-        private void NextOrder(object? sender, RoutedEventArgs e)
+        
+        private void _loadFrozenOrder(FrozenRozkazS frozenRozkazS, ArchivalOrderButtonSet archivalOrderButtonSet)
         {
-            throw new NotImplementedException();
+            RozkazUC.Content = frozenRozkazS;
+            Rozkaz = frozenRozkazS;
+            ButtonSet.Content = archivalOrderButtonSet;
         }
 
         private void _verifySession()
@@ -105,11 +161,6 @@ namespace Generator_rozkazów_S
             if (_loggedInUser.LoggedInTill is not null && !(_loggedInUser.LoggedInTill < DateTime.Now)) return;
             Extensions.MessageBox.Warning("Sesja wygasła, zaloguj się ponownie", "Sesja wygasła");
             while (_login()){}
-        }
-        
-        private OrderS _saveToDatabase(IRozkazS rozkaz)
-        {
-            throw new NotImplementedException();
         }
         
         private void _newEditableOrder()
@@ -134,112 +185,13 @@ namespace Generator_rozkazów_S
             return lastOrder.MinorNumber + 1;
         }
 
-        private void CleanOrder(object sender, RoutedEventArgs e)
+        private void CleanOrder()
         {
             _verifySession();
             if (_loggedInUser.Role is null) throw new NullReferenceException();
             _newEditableOrder();
         }
-
-        private void UpdateTime(object sender, RoutedEventArgs e)
-        {
-            Rozkaz.Update_Time();
-        }
-
-        private void PrintOrder(object sender, RoutedEventArgs e)
-        {
-            OrderStatus? status = null;
-            if (Rozkaz is FrozenRozkazS fRozkaz)
-            {
-                if (fRozkaz.Status is null) throw new IllegalStateException();
-                Enum.Parse<OrderStatus>(fRozkaz.Status);
-            }
-            
-            _verifySession();
-            if (_loggedInUser.Role is null) throw new NullReferenceException();
-            if (!_loggedInUser.Role.GivingOrdersIndependently && status is null)
-            {
-                 Extensions.MessageBox.Error("Nie masz uprawnień do samodzielnego wydania rozkazu S", "Brak uprawnień");
-            }
-
-            FrozenRozkazS frozenOrder;
-            if (Rozkaz is OrderSEditableView editable)
-                frozenOrder = editable.Froze();
-            else
-                frozenOrder = (FrozenRozkazS)Rozkaz;
-
-            try
-            {
-                _dbCtx.SaveOrder(frozenOrder, status == OrderStatus.Rt ? OrderStatus.Rt : OrderStatus.Printed);
-            }
-            catch (NullReferenceException)
-            {
-                MessageBox.Show("Sprawdź poprawność rozkazu");
-                return;
-            }
-
-            if (status is null)
-            {
-                _newEditableOrder();
-            }
-
-            frozenOrder.Width = 10.5 / (2.54 / 96);
-            PrintDialog printDialog = new PrintDialog();
-            if (printDialog.ShowDialog() != true) return;
-            printDialog.PrintTicket.PageOrientation = PageOrientation.Portrait;
-            printDialog.PrintTicket.PageMediaSize = new PageMediaSize(PageMediaSizeName.ISOA4);
-            printDialog.PrintVisual(frozenOrder, "Drukuj rozkaz S");
-        }
-
-        private void Radiophone(object sender, RoutedEventArgs e)
-        {
-            _verifySession();
-            if (_loggedInUser.Role is null) throw new NullReferenceException();
-            if (!_loggedInUser.Role.GivingOrdersIndependently)
-            {
-                MessageBox.Show("Nie masz uprawnień do samodzielnego wydania rozkazu S");
-                return;
-            }
-
-            if (Rozkaz is not OrderSEditableView view) return;
-            FrozenRozkazS frozen = view.Froze();
-
-            try
-            {
-                _dbCtx.SaveOrder(frozen, OrderStatus.Rt);
-            }
-            catch (NullReferenceException)
-            {
-                Extensions.MessageBox.Error("Sprawdź poprawność rozkazu", "Błędnie wypełniony rozkaz");
-                return;
-            }
-            
-            MessageBox.Show("Nadano rozkaz");
-            _newEditableOrder();
-        }
-
-        private void Redirect(object sender, RoutedEventArgs e)
-        {
-            _verifySession();
-            if (Rozkaz is not OrderSEditableView) return;
-            Redirection redirection = new Redirection(_dbCtx, Rozkaz.Station, (OrderSEditableView) Rozkaz);
-            try
-            {
-                redirection.ShowDialog();
-            }
-            catch (NullReferenceException)
-            {
-                Extensions.MessageBox.Error("Sprawdź poprawność rozkazu", "Błędnie wypełniony rozkaz");
-                return;
-            }
-            if(!redirection.Result) Extensions.MessageBox.Warning("Przerwano wysyłanie rozkazu", "Rozkaz nie przekazany");
-            else _newEditableOrder();
-        }
-
-        private void BeforeOrder(object sender, RoutedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+        
         
         private void UserManagement_OnClick(object sender, RoutedEventArgs e)
         {

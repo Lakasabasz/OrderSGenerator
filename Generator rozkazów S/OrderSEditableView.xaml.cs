@@ -31,7 +31,12 @@ public partial class OrderSEditableView : UserControl, IRozkazS
         set => _vmodel.OrderNumber = value;
     }
 
-    public User? Isedr { set => _vmodel.IsedrSet = value; }
+    public User? Isedr
+    {
+        get => _vmodel.IsedrSet;
+        set => _vmodel.IsedrSet = value;
+    }
+
     public User? FromOrder { set => _vmodel.FromOrderSet = value; }
 
     public Station Station

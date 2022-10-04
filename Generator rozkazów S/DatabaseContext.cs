@@ -40,12 +40,14 @@ public class DatabaseContext: DbContext
     
     public bool IsBefore(int currentMajor, int currentMinor)
     {
-        throw new NotImplementedException();
+        return OrdersS.Any(x => x.MajorNumber < currentMajor || 
+                                (x.MajorNumber == currentMajor && x.MinorNumber < currentMinor));
     }
 
     public bool IsNext(int currentMajor, int currentMinor)
     {
-        throw new NotImplementedException();
+        return OrdersS.Any(x => x.MajorNumber > currentMajor || 
+                                (x.MajorNumber == currentMajor && x.MinorNumber > currentMinor));
     }
 
     public static int MajorNumberCalc(bool yearlyMode, DateOnly date)

@@ -43,6 +43,7 @@ public class OrderS
     public int OrderMinute { get; set; }
     public string TrainDriver { get; set; } = null!;
     public string? TrainManager { get; set; }
+    public bool Canceled { get; set; }
 
     public bool CompareContent(OrderS orderRecord)
     {
@@ -71,7 +72,8 @@ public class OrderS
                OrderHour == orderRecord.OrderHour &&
                OrderMinute == orderRecord.OrderMinute &&
                TrainDriver == orderRecord.TrainDriver &&
-               TrainManager == orderRecord.TrainManager;
+               TrainManager == orderRecord.TrainManager &&
+               Canceled == orderRecord.Canceled;
     }
 
     public VMOrderS ToVMOrderS()
@@ -103,7 +105,8 @@ public class OrderS
             Hour = OrderHour,
             Minute = OrderMinute,
             TrainDriver = TrainDriver,
-            TrainManager = TrainManager == string.Empty ? null : SemaphoreS1SingpostOutName
+            TrainManager = TrainManager == string.Empty ? null : SemaphoreS1SingpostOutName,
+            Canceled = Canceled
         };
     }
 }
