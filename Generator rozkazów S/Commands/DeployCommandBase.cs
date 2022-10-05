@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using Generator_rozkazów_S.Models;
 
 namespace Generator_rozkazów_S.Commands;
@@ -18,5 +19,8 @@ public abstract class DeployCommandBase
         _newEditableOrder = newEditableOrder;
     }
 
-    public abstract bool CanExecute(object? parameter);
+    public virtual bool CanExecute(object? parameter)
+    {
+        return _order.Validate();
+    }
 }

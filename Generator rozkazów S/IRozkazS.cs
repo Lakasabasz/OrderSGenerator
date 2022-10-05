@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Controls;
 using Generator_rozkazów_S.Models;
 
 namespace Generator_rozkazów_S;
@@ -14,4 +15,6 @@ public interface IRozkazS
     string Post { set; }
     DateOnly Date { get; }
     Station Station { get; }
+    void TriggerValidation();
+    bool Validate();
 }

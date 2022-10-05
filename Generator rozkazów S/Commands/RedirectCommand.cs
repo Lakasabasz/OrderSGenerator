@@ -7,13 +7,11 @@ namespace Generator_rozkazów_S.Commands;
 
 public class RedirectCommand: DeployCommandBase, ICommand
 {
-    public RedirectCommand(IRozkazS order, Func<User> verifySession, DatabaseContext ctx, Action newEditableOrder) : base(order, verifySession, ctx, newEditableOrder)
-    {
-    }
+    public RedirectCommand(IRozkazS order, Func<User> verifySession, DatabaseContext ctx, Action newEditableOrder) : base(order, verifySession, ctx, newEditableOrder){}
 
     public override bool CanExecute(object? parameter)
     {
-        return true;
+        return base.CanExecute(parameter);
     }
 
     public void Execute(object? parameter)
@@ -38,8 +36,12 @@ public class RedirectCommand: DeployCommandBase, ICommand
             return;
         }
         if(!redirection.Result) MessageBox.Warning("Przerwano wysyłanie rozkazu", "Rozkaz nie przekazany");
-        else _newEditableOrder();
+        else _newEditableOrder?.Invoke();
     }
 
-    public event EventHandler? CanExecuteChanged;
+    public event EventHandler? CanExecuteChanged
+    {
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
+    }
 }

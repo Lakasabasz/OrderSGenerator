@@ -16,7 +16,7 @@ public class RadiotelephoneCommand : DeployCommandBase, ICommand
 
     public override bool CanExecute(object? parameter)
     {
-        return true;
+        return base.CanExecute(parameter);
     }
 
     public void Execute(object? parameter)
@@ -51,6 +51,10 @@ public class RadiotelephoneCommand : DeployCommandBase, ICommand
         MessageBox.Info("Nadano rozkaz", "Nadano rozkaz");
         _newEditableOrder();
     }
-
-    public event EventHandler? CanExecuteChanged;
+    
+    public event EventHandler? CanExecuteChanged
+    {
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
+    }
 }

@@ -14,7 +14,7 @@ public class PrintCommand : DeployCommandBase, ICommand
 
     public override bool CanExecute(object? parameter)
     {
-        return true;
+        return base.CanExecute(parameter);
     }
 
     public void Execute(object? parameter)
@@ -33,7 +33,6 @@ public class PrintCommand : DeployCommandBase, ICommand
             MessageBox.Error("Nie masz uprawnień do samodzielnego wydania rozkazu S", "Brak uprawnień");
             return;
         }
-
         FrozenRozkazS frozenOrder;
         if (_order is OrderSEditableView editable)
         {
@@ -60,7 +59,7 @@ public class PrintCommand : DeployCommandBase, ICommand
 
         if (status is null)
         {
-            _newEditableOrder();
+            _newEditableOrder?.Invoke();
         }
 
         frozenOrder.Width = 10.5 / (2.54 / 96);
@@ -71,5 +70,9 @@ public class PrintCommand : DeployCommandBase, ICommand
         printDialog.PrintVisual(frozenOrder, "Drukuj rozkaz S");
     }
 
-    public event EventHandler? CanExecuteChanged;
+    public event EventHandler? CanExecuteChanged
+    {
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
+    }
 }

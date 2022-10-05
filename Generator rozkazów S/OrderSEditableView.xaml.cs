@@ -44,6 +44,17 @@ public partial class OrderSEditableView : UserControl, IRozkazS
         get => _vmodel.Station;
         set => _vmodel.Station = value;
     }
+
+    public void TriggerValidation()
+    {
+        TrainDriver.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
+    }
+
+    public bool Validate()
+    {
+        return _vmodel.Validate();
+    }
+
     public string Post { set => _vmodel.Post = value; }
     public DateOnly Date => _vmodel.Date;
     public IList<Station> Stations { set => _vmodel.Stations = value; }
