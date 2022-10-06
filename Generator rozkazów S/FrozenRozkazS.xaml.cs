@@ -43,13 +43,9 @@ public partial class FrozenRozkazS : UserControl, IRozkazS
     {
         InitializeComponent();
         _vmodel = orderS.ToVMOrderS();
+        _vmodel.YearMode = yearMode;
         Status = orderS.Status;
         DataContext = _vmodel;
-    }
-
-    public FrozenRozkazS()
-    {
-        throw new NotImplementedException();
     }
 
     public FrozenRozkazS(VMOrderS vmOrderS, bool yearMode)

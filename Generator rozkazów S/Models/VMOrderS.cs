@@ -476,7 +476,7 @@ public class VMOrderS: INotifyPropertyChanged
     {
         return !(_to is null || _from is null || _trackNr is null || _lastTrainNr is null ||
                  _lastTrainDestination is null || _lastTrainTime is null) ||
-               (_to is null && _from is null && _trackNr is null && _lastTrainNr is null &&
+               !(_to is null && _from is null && _trackNr is null && _lastTrainNr is null &&
                 _lastTrainDestination is null && _lastTrainTime is null);
     }
 
@@ -488,8 +488,8 @@ public class VMOrderS: INotifyPropertyChanged
 
     private bool _d1rule()
     {
-        bool onlyOneOrZero = (UseSemaphoreS1Out ? 1 : 0) + (UseWithoutSemaphoreOut ? 1 : 0) +
-            (UseSemaphoreS1SignpostOut ? 1 : 0) <= 1;
-        return _signalDriverOrder is not null && onlyOneOrZero;
+        int onlyOneOrZero = (UseSemaphoreS1Out ? 1 : 0) + (UseWithoutSemaphoreOut ? 1 : 0) +
+            (UseSemaphoreS1SignpostOut ? 1 : 0);
+        return (_signalDriverOrder is not null && onlyOneOrZero == 1) || onlyOneOrZero == 0;
     }
 }

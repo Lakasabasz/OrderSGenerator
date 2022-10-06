@@ -30,6 +30,9 @@ public class LoadNextOrderCommand: LoadCommandBase, ICommand
         ArchivalOrderButtonSet aobs = Aobs(fbs, loggedIn, orderS);
         _update(fbs, aobs);
     }
-
-    public event EventHandler? CanExecuteChanged;
+    public event EventHandler? CanExecuteChanged
+    {
+        add => CommandManager.RequerySuggested += value;
+        remove => CommandManager.RequerySuggested -= value;
+    }
 }

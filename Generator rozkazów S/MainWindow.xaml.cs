@@ -80,29 +80,13 @@ namespace Generator_rozkazów_S
                     new NewOrderButtonSet(
                         new ClearOrderCommand(CleanOrder), 
                         new UpdateOrderTimeCommand((OrderSEditableView) Rozkaz),
-                        new PrintCommand(Rozkaz, () =>
-                        {
-                            _verifySession();
-                            return _loggedInUser;
-                        }, _dbCtx, _newEditableOrder),
-                        new RadiotelephoneCommand(Rozkaz, () =>
-                        {
-                            _verifySession();
-                            return _loggedInUser;
-                        }, _dbCtx, _newEditableOrder),
-                        new RedirectCommand(Rozkaz, () =>
-                        {
-                            _verifySession();
-                            return _loggedInUser;
-                        }, _dbCtx, _newEditableOrder), 
+                        new PrintCommand(Rozkaz, _verifySession, _dbCtx, _newEditableOrder),
+                        new RadiotelephoneCommand(Rozkaz, _verifySession, _dbCtx, _newEditableOrder),
+                        new RedirectCommand(Rozkaz, _verifySession, _dbCtx, _newEditableOrder), 
                         new LoadBeforeOrderCommand(_dbCtx,
                             DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date),
-                            Rozkaz.Number,
-                            () =>
-                            {
-                                _verifySession();
-                                return _loggedInUser;
-                            }, _loadFrozenOrder, _newEditableOrder, _settings.YearlyMode));
+                            Rozkaz.Number, _verifySession, _loadFrozenOrder, _newEditableOrder,
+                            _settings.YearlyMode));
             }
             else
             {
@@ -110,21 +94,13 @@ namespace Generator_rozkazów_S
                 var beforeOrderCommand = new LoadBeforeOrderCommand(
                     _dbCtx,
                     Rozkaz is not null ? DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date) : 0,
-                    Rozkaz?.Number ?? 0,
-                    () =>
-                    {
-                        _verifySession();
-                        return _loggedInUser;
-                    }, _loadFrozenOrder, null, _settings.YearlyMode);
+                    Rozkaz?.Number ?? 0, _verifySession, _loadFrozenOrder, null,
+                    _settings.YearlyMode);
                 var nextOrderCommand = new LoadNextOrderCommand(
                     _dbCtx,
                     Rozkaz is not null ? DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date) : 0,
-                    Rozkaz?.Number ?? 0,
-                    () =>
-                    {
-                        _verifySession();
-                        return _loggedInUser;
-                    }, _loadFrozenOrder, null, _settings.YearlyMode);
+                    Rozkaz?.Number ?? 0, _verifySession, _loadFrozenOrder, null,
+                    _settings.YearlyMode);
                 if (Rozkaz is null)
                     ButtonSet.Content = new ArchivalOrderButtonSet(null, null, null,
                         beforeOrderCommand, nextOrderCommand);
@@ -132,11 +108,7 @@ namespace Generator_rozkazów_S
                     ButtonSet.Content = new ArchivalOrderButtonSet(null, null,
                         new PrintCommand(
                             Rozkaz,
-                            () =>
-                            {
-                                _verifySession();
-                                return _loggedInUser;
-                            }, 
+                            _verifySession, 
                             _dbCtx,
                             null),
                         beforeOrderCommand, nextOrderCommand);
@@ -156,11 +128,13 @@ namespace Generator_rozkazów_S
             ButtonSet.Content = archivalOrderButtonSet;
         }
 
-        private void _verifySession()
+        private User _verifySession()
         {
-            if (_loggedInUser.LoggedInTill is not null && !(_loggedInUser.LoggedInTill < DateTime.Now)) return;
+            if (_loggedInUser.LoggedInTill is not null && !(_loggedInUser.LoggedInTill < DateTime.Now)) return _loggedInUser;
             Extensions.MessageBox.Warning("Sesja wygasła, zaloguj się ponownie", "Sesja wygasła");
             while (_login()){}
+
+            return _loggedInUser;
         }
         
         private void _newEditableOrder()
@@ -172,6 +146,15 @@ namespace Generator_rozkazów_S
                 _posterunek, _settings.YearlyMode);
             RozkazUC.Content = Rozkaz;
             Rozkaz.Update_Time();
+            ButtonSet.Content = new NewOrderButtonSet(
+                new ClearOrderCommand(CleanOrder), 
+                new UpdateOrderTimeCommand((OrderSEditableView) Rozkaz),
+                new PrintCommand(Rozkaz, _verifySession, _dbCtx, _newEditableOrder),
+                new RadiotelephoneCommand(Rozkaz, _verifySession, _dbCtx, _newEditableOrder),
+                new RedirectCommand(Rozkaz, _verifySession, _dbCtx, _newEditableOrder), 
+                new LoadBeforeOrderCommand(_dbCtx,
+                    DatabaseContext.MajorNumberCalc(_settings.YearlyMode, Rozkaz.Date),
+                    Rozkaz.Number, _verifySession, _loadFrozenOrder, _newEditableOrder, _settings.YearlyMode));
         }
         
         private int _getNextOrderNumber()

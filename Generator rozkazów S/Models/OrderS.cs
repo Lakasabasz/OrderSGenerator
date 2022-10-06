@@ -81,6 +81,7 @@ public class OrderS
         return new VMOrderS()
         {
             Date = Date,
+            OrderNumber = MinorNumber,
             IsedrSet = Authorized,
             FromOrderSet = OnCommand,
             TrainDriverNumber = TrainDriverNumber,

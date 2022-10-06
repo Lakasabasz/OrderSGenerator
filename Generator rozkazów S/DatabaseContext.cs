@@ -71,8 +71,10 @@ public class DatabaseContext: DbContext
             if (!recorded.CompareContent(orderRecord)) throw new IllegalStateException();
             OrderStatus inDb;
             Enum.TryParse(recorded.Status, out inDb);
-            if (!inDb.PossibleUpdate(status)) throw new IllegalStateException();
-            recorded.Status = status.ToString();
+            if (inDb.PossibleUpdate(status))
+                recorded.Status = status.ToString();
+            else if (status == OrderStatus.Printed) return;
+            else throw new IllegalStateException();
         }
         SaveChanges();
     }
