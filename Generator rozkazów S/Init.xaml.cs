@@ -33,10 +33,9 @@ enum AuthenticationResult
 public partial class Init
 {
     private List<DbConnectionSet> _targetOptions;
-    public string? Posterunek { get; private set; }
     public DatabaseContext? DbCtx {get; private set; }
     public User? LoggedInUser { get; private set; }
-    public Setting Settings { get; set; }
+    public Setting? Settings { get; set; }
 
     private readonly IPAddress? _currentIpAddress;
 
@@ -94,10 +93,7 @@ public partial class Init
                 decrypted = AesTool.Decrypt(aes, bytes);
                 break;
             }
-            catch (CryptographicException e)
-            {
-                continue;
-            }
+            catch (CryptographicException e){ }
         }
         if (decrypted is null)
         {
@@ -287,6 +283,7 @@ public partial class Init
         if (resultDescription.Item1 != string.Empty)
             MessageBox.Warning(resultDescription.Item1, "Ostrzeżenie logowania");
 
+        _fillMissing();
         Close();
     }
 
@@ -299,7 +296,6 @@ public partial class Init
         }
         Setting basicsSetting = DbCtx.Settings.First();
         Settings = basicsSetting;
-        Posterunek = basicsSetting.Post;
         if (LoggedInUser is null)
         {
             MessageBox.Critical("Wewnętrzny błąd logowania 0x01", "Błąd logowania");

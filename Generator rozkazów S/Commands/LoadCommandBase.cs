@@ -11,7 +11,7 @@ public class LoadCommandBase
     protected readonly Func<User> _verifySession;
     protected readonly Action<FrozenRozkazS, ArchivalOrderButtonSet> _update;
     protected readonly bool _yearlyMode;
-    protected readonly Action _newOrderTemplate;
+    protected readonly Action? _newOrderTemplate;
 
     public LoadCommandBase(DatabaseContext dbCtx, int currentMajor, int currentMinor, Func<User> verifySession,
         Action<FrozenRozkazS, ArchivalOrderButtonSet> updateOrder, Action newOrderTemplate, bool yearlyMode)

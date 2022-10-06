@@ -88,7 +88,7 @@
         <Label FontWeight="Bold" Grid.Row="3" Content="3" />
         <Border Grid.Row="3" Grid.Column="1" BorderThickness="2 0 0 0" BorderBrush="Black" />
         <StackPanel Grid.Row="3" Grid.Column="1" Margin="10 5 0 5" >
-            <TextBlock Margin="0 0 0 5">Od <TextBlock Margin="5 0 5 -5" Text="{Binding From}" /> do <TextBlock Margin="5 0 5 -5" Text="{Binding To}" /> po torze nr <TextBlock Margin="5 0 5 -5" Text="{Binding Nr}" /> ruch</TextBlock>
+            <TextBlock Margin="0 0 0 5">Od <TextBlock Margin="5 0 5 -5" Text="{Binding From}" /> do <TextBlock Margin="5 0 5 -5" Text="{Binding To}" /> po torze nr <TextBlock Margin="5 0 5 -5" Text="{Binding TrackNr}" /> ruch</TextBlock>
             <TextBlock Margin="0 0 0 5">pociągów prowadzony jest w odstępie posterunków następczych.</TextBlock>
             <TextBlock Margin="0 0 0 5">Wskazania semaforów sbl są nieważne. Zachować ostrożność od </TextBlock>
             <TextBlock Margin="0 0 0 5">ostatniego semafora ze wskaźnikiem "W 18". Szlak wolny, ostatni</TextBlock>

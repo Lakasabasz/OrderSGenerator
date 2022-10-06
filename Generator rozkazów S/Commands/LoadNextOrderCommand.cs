@@ -8,7 +8,7 @@ namespace Generator_rozkazów_S.Commands;
 
 public class LoadNextOrderCommand: LoadCommandBase, ICommand
 {
-    public LoadNextOrderCommand(DatabaseContext dbCtx, int currentMajor, int currentMinor, Func<User> verifySession, Action<FrozenRozkazS, ArchivalOrderButtonSet> updateOrder, Action newOrderTemplate, bool yearlyMode) : base(dbCtx, currentMajor, currentMinor, verifySession, updateOrder, newOrderTemplate, yearlyMode)
+    public LoadNextOrderCommand(DatabaseContext dbCtx, int currentMajor, int currentMinor, Func<User> verifySession, Action<FrozenRozkazS, ArchivalOrderButtonSet> updateOrder, Action? newOrderTemplate, bool yearlyMode) : base(dbCtx, currentMajor, currentMinor, verifySession, updateOrder, newOrderTemplate, yearlyMode)
     {
     }
 

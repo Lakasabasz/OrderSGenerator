@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using Generator_rozkazów_S.Commands;
 using Generator_rozkazów_S.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Generator_rozkazów_S
 {
@@ -50,18 +51,18 @@ namespace Generator_rozkazów_S
             foreach (var orderSe in update) WaitingOrders.Add(orderSe);
         }
 
-        private bool _login()
+        private bool _login(bool switchOrder = true)
         {
             Init initdata = new Init();
             initdata.ShowDialog();
             if(initdata.LoggedInUser is null ||
-               initdata.Posterunek is null ||
+               initdata.Settings is null ||
                initdata.DbCtx is null)
             {
                 Close();
                 return false;
             }
-            _posterunek = initdata.Posterunek;
+            _posterunek = initdata.Settings.Post;
             _settings = initdata.Settings;
             _dbCtx = initdata.DbCtx;
             _loggedInUser = initdata.LoggedInUser;
@@ -72,6 +73,7 @@ namespace Generator_rozkazów_S
             
             _availableStations = _dbCtx.Stations.ToList();
             IsEnabledWaitingOrders = !_loggedInUser.Role.GivingOrdersIndependently;
+            if (!switchOrder) return true;
             if (_loggedInUser.Role.GivingOrdersIndependently)
             {
                 _newEditableOrder();
@@ -118,10 +120,25 @@ namespace Generator_rozkazów_S
 
         private void _loadLastFrozenOrder()
         {
-            throw new NotImplementedException();
+            OrderS? orderS = _dbCtx.OrdersS
+                .OrderByDescending(x => x.MajorNumber)
+                .ThenByDescending(x => x.MinorNumber)
+                .Include(x => x.Authorized)
+                .FirstOrDefault();
+            FrozenRozkazS? fbs = null;
+            if (orderS is not null)
+            {
+                fbs = new FrozenRozkazS(orderS, _settings.YearlyMode);
+            }
+            ArchivalOrderButtonSet aobs = new ArchivalOrderButtonSet(
+                null, null,
+                fbs is null ? null : new PrintCommand(fbs, _verifySession, _dbCtx, null),
+                new LoadBeforeOrderCommand(_dbCtx, orderS?.MajorNumber ?? 0, orderS?.MinorNumber ?? 0, _verifySession, _loadFrozenOrder, null, _settings.YearlyMode),
+                new LoadNextOrderCommand(_dbCtx, orderS?.MajorNumber ?? 0, orderS?.MinorNumber ?? 0, _verifySession, _loadFrozenOrder, null, _settings.YearlyMode));
+            _loadFrozenOrder(fbs, aobs);
         }
         
-        private void _loadFrozenOrder(FrozenRozkazS frozenRozkazS, ArchivalOrderButtonSet archivalOrderButtonSet)
+        private void _loadFrozenOrder(FrozenRozkazS? frozenRozkazS, ArchivalOrderButtonSet archivalOrderButtonSet)
         {
             RozkazUC.Content = frozenRozkazS;
             Rozkaz = frozenRozkazS;
@@ -132,7 +149,7 @@ namespace Generator_rozkazów_S
         {
             if (_loggedInUser.LoggedInTill is not null && !(_loggedInUser.LoggedInTill < DateTime.Now)) return _loggedInUser;
             Extensions.MessageBox.Warning("Sesja wygasła, zaloguj się ponownie", "Sesja wygasła");
-            while (_login()){}
+            while (!_login(false)){}
 
             return _loggedInUser;
         }
