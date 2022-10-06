@@ -474,10 +474,10 @@ public class VMOrderS: INotifyPropertyChanged
 
     private bool _d3rule()
     {
-        return !(_to is null || _from is null || _trackNr is null || _lastTrainNr is null ||
-                 _lastTrainDestination is null || _lastTrainTime is null) ||
-               !(_to is null && _from is null && _trackNr is null && _lastTrainNr is null &&
-                _lastTrainDestination is null && _lastTrainTime is null);
+        return (_to is null && _from is null && _trackNr is null && _lastTrainNr is null &&
+                _lastTrainDestination is null && _lastTrainTime is null) ||
+               (_to is not null && _from is not null && _trackNr is not null && _lastTrainNr is not null &&
+                _lastTrainDestination is not null && _lastTrainTime is not null);
     }
 
     private bool _d2rule()

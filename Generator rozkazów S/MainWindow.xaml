@@ -7,7 +7,7 @@
         xmlns:models="clr-namespace:Generator_rozkazów_S.Models"
         mc:Ignorable="d"
         Title="Generator rozkazów" Height="820" Width="450" Top="0">
-    <Grid Name="MainGrid">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*" />
@@ -18,7 +18,7 @@
                 <MenuItem Header="_Narzędzia">
                     <MenuItem Header="_Zarządzaj użytkownikami" Icon="👨‍💼" Name="UserManagemant" IsEnabled="False" Click="UserManagement_OnClick" />
                 </MenuItem>
-                <MenuItem Header="_Oczekujące" ItemsSource="{Binding WaitingOrders}" IsEnabled="{Binding IsEnabledWaitingOrders}">
+                <MenuItem Name="MenuItem" Header="_Oczekujące" ItemsSource="{Binding WaitingOrders}" IsEnabled="{Binding IsEnabledWaitingOrders}">
                     <MenuItem.ItemTemplate>
                         <DataTemplate DataType="{x:Type models:OrderS}">
                             <StackPanel Orientation="Horizontal">

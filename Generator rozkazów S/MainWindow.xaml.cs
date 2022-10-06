@@ -11,6 +11,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Generator_rozkazów_S
 {
+    public class Test
+    {
+        public string MinorNumber { get; set; }
+        public string Status { get; set; }
+    }
+    
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -20,16 +26,26 @@ namespace Generator_rozkazów_S
         private DatabaseContext _dbCtx;
         private User _loggedInUser;
         private IList<Station> _availableStations;
-        public ObservableCollection<OrderS> WaitingOrders;
+        public ObservableCollection<OrderS> WaitingOrders { get; set; } = new();
         private Setting _settings;
-        public bool IsEnabledWaitingOrders { get; set; }
+
+        public bool IsEnabledWaitingOrders
+        {
+            get => _isEnabledWaitingOrders;
+            set
+            {
+                _isEnabledWaitingOrders = value;
+                OnPropertyChanged();
+            }
+        }
+
         public bool IsEnabledRedirectButton { get; set; }
         public IRozkazS? Rozkaz;
+        private bool _isEnabledWaitingOrders;
 
         public MainWindow()
         {
             InitializeComponent();
-            WaitingOrders = new ObservableCollection<OrderS>();
             DataContext = this;
             Hide();
             if (!_login())
