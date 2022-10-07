@@ -24,7 +24,7 @@ public class PrintCommand : DeployCommandBase, ICommand
         if (_order is FrozenRozkazS fRozkaz)
         {
             if (fRozkaz.Status is null) throw new IllegalStateException();
-            Enum.Parse<OrderStatus>(fRozkaz.Status);
+            status = Enum.Parse<OrderStatus>(fRozkaz.Status);
         }
         
         if (loggedInUser.Role is null) throw new NullReferenceException();

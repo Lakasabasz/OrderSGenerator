@@ -106,7 +106,7 @@ public class OrderS
             Hour = OrderHour,
             Minute = OrderMinute,
             TrainDriver = TrainDriver,
-            TrainManager = TrainManager == string.Empty ? null : SemaphoreS1SingpostOutName,
+            TrainManager = TrainManager == string.Empty ? null : TrainManager,
             Canceled = Canceled
         };
     }

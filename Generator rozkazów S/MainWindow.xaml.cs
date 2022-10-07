@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Timers;
 using System.Windows;
 using Generator_rozkazów_S.Commands;
 using Generator_rozkazów_S.Models;
@@ -11,12 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Generator_rozkazów_S
 {
-    public class Test
+    public class OrderCommand
     {
-        public string MinorNumber { get; set; }
-        public string Status { get; set; }
+        public OrderS Order { get; set; }
+        public LoadOrderCommand Command { get; set; }
     }
-    
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
@@ -26,7 +26,18 @@ namespace Generator_rozkazów_S
         private DatabaseContext _dbCtx;
         private User _loggedInUser;
         private IList<Station> _availableStations;
-        public ObservableCollection<OrderS> WaitingOrders { get; set; } = new();
+
+        public ObservableCollection<OrderCommand> WaitingOrders
+        {
+            get => _waitingOrders;
+            set
+            {
+                if (Equals(value, _waitingOrders)) return;
+                _waitingOrders = value;
+                OnPropertyChanged();
+            }
+        }
+
         private Setting _settings;
 
         public bool IsEnabledWaitingOrders
@@ -43,6 +54,9 @@ namespace Generator_rozkazów_S
         public IRozkazS? Rozkaz;
         private bool _isEnabledWaitingOrders;
 
+        private Timer _timer;
+        private ObservableCollection<OrderCommand> _waitingOrders = new();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -55,6 +69,15 @@ namespace Generator_rozkazów_S
             Show();
             _updateWaitingList();
             Rozkaz?.Update_Time();
+            _timer = new Timer(10*1000);
+            _timer.Elapsed += TimerOnElapsed;
+            _timer.AutoReset = true;
+            _timer.Enabled = true;
+        }
+
+        private void TimerOnElapsed(object? sender, ElapsedEventArgs e)
+        {
+            _updateWaitingList();
         }
 
         private void _updateWaitingList()
@@ -62,9 +85,15 @@ namespace Generator_rozkazów_S
             if (_loggedInUser.Role is null)
                 throw new NullReferenceException("_loggedInUser.Role");
             if (_loggedInUser.Role.GivingOrdersIndependently) return;
-            var update = _dbCtx.OrdersS.Where(x => x.Status == OrderStatus.Redirected.ToString()).ToList();
-            WaitingOrders.Clear();
-            foreach (var orderSe in update) WaitingOrders.Add(orderSe);
+            DatabaseContext dbCtx = new DatabaseContext(_dbCtx);
+            var update = dbCtx.OrdersS.Where(x => x.Status == OrderStatus.Redirected.ToString()).ToList();
+            WaitingOrders = new ObservableCollection<OrderCommand>();
+            foreach (var orderSe in update)
+            {
+                LoadOrderCommand loc = new LoadOrderCommand(dbCtx, orderSe, _verifySession, _loadFrozenOrder,
+                    _newEditableOrder, _settings.YearlyMode);
+                WaitingOrders.Add(new OrderCommand() { Order = orderSe, Command = loc });
+            }
         }
 
         private bool _login(bool switchOrder = true)

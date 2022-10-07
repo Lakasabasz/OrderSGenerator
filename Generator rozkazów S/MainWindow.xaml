@@ -18,15 +18,20 @@
                 <MenuItem Header="_Narzędzia">
                     <MenuItem Header="_Zarządzaj użytkownikami" Icon="👨‍💼" Name="UserManagemant" IsEnabled="False" Click="UserManagement_OnClick" />
                 </MenuItem>
-                <MenuItem Name="MenuItem" Header="_Oczekujące" ItemsSource="{Binding WaitingOrders}" IsEnabled="{Binding IsEnabledWaitingOrders}">
+                <MenuItem Header="_Oczekujące" ItemsSource="{Binding WaitingOrders}" IsEnabled="{Binding IsEnabledWaitingOrders}">
                     <MenuItem.ItemTemplate>
-                        <DataTemplate DataType="{x:Type models:OrderS}">
+                        <DataTemplate DataType="{x:Type local:OrderCommand}">
                             <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="{Binding MinorNumber}" Margin="0 0 5 0" />
-                                <TextBlock Text="{Binding Status}" />
+                                <TextBlock Text="{Binding Order.MinorNumber}" Margin="0 0 5 0" />
+                                <TextBlock Text="{Binding Order.Status}" />
                             </StackPanel>
                         </DataTemplate>
                     </MenuItem.ItemTemplate>
+                    <MenuItem.ItemContainerStyle>
+                        <Style TargetType="MenuItem">
+                            <Setter Property="Command" Value="{Binding Command}" />
+                        </Style>
+                    </MenuItem.ItemContainerStyle>
                 </MenuItem>
             </Menu>
         </DockPanel>

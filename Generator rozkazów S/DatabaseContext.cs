@@ -30,6 +30,15 @@ public class DatabaseContext: DbContext
         _pass = password;
     }
 
+    public DatabaseContext(DatabaseContext dbCtx)
+    {
+        _host = dbCtx._host;
+        _port = dbCtx._port;
+        _db = dbCtx._db;
+        _user = dbCtx._user;
+        _pass = dbCtx._pass;
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         var connectionString =
